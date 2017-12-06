@@ -5,30 +5,38 @@
 #include <vector>
 
 enum OrderStatus {
+	PENDING_VERIFICATION,
 	READY_FOR_COLLECTION,
+	COLLECTION_COMPLETE,
 	OUT_FOR_DELIVERY,
 	UNKNOWN
 };
 
+enum RobotTask {
+	COLLECT_AND_LOAD,
+	UNLOAD,
+	IDLE
+};
+
 class Order {
 private:
-	int status;
-	std::vector<Product> items;
+	const int task_;
+	const int ID_;
+	std::vector<Product> products_;
+	int bay;
 public:
-	const int ID;
 
-	Order(const int id) :ID(id) {}
+	Order(const int order_id, const int task) :ID_(order_id), task_(task) {}
 
 	void add(Product product) {
-		items.push_back(product);
+		products_.push_back(product);
 	}
 
 	std::vector<Product> retrieve() {
-		return items;
+		return products_;
 	}
 
 };
-
 
 
 #endif

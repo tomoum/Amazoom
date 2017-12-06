@@ -11,6 +11,12 @@
 #include <string>
 #include <iostream>
 
+class WarehouseProduct : Product {
+public:
+	ShelfLocation location;
+};
+
+
 class Product {
 public:
 	const std::string name;
@@ -34,7 +40,6 @@ public:
 		os << s.toString();
 		return os;
 	}
-
 
 };
 

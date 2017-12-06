@@ -114,6 +114,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DynamicOrderQueue.h" />
     <ClInclude Include="Storage.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Messages.h" />

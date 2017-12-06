@@ -1,7 +1,9 @@
-#pragma once
 /*
-Description: Provides all information about a particular product having the same ID as the product ID
+*Date: 12/1/2017
+*Author: Muhab Tomoum - 52141132
+*Description: Provides all information about a particular product having the same ID as the product ID
 */
+
 
 #pragma once
 #ifndef INVENTORY_H

@@ -10,6 +10,8 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <mutex>
+#include <map>
 
 #define WALL_CHAR 'X'
 #define EMPTY_CHAR ' '
@@ -24,56 +26,61 @@
 #define EMPTY 0
 #define FULL 1
 
+struct locationcomp {
+	bool operator() (Location& lhs, Location& rhs)
+	{
+		if ((lhs.col < rhs.col) && (lhs.row < rhs.row)) {
+			return true;
+		}
+		return false;
+	}
+};
+
 class Storage {
 private:
+	std::mutex mutex_;
 	int max_row;
 	int max_col;
 	char floor[MAX_FLOOR_SIZE][MAX_FLOOR_SIZE]; // floor storage [c][r]
 	std::vector<StorageUnit> ShelfUnits;  //location robot needs to be to access shelf - theyre smart enough to recognize orientation of shelf relative to position
+	std::map<Location, StorageUnit,locationcomp> mymap;
 	std::vector<Location> bay1;
 	std::vector<Location> bay2;
 public:
 	Storage() {
 		LoadFloor();
-		GetShelfLocations();
+		InitializeShelfLocations();
 	}
 
+	//Tries to find a free shelf returns a ShelfLocation or 
+	//if non available returns an InvalidLocation type
+	Location GetFreeShelf() {
+		ShelfLocation location;
 
-	/*
-	* Reads the floorplan and retrieves all shelf loactions and itializes shelf capacity to 0
-	*   Note: floorplan
-	*/
-	void GetShelfLocations(){
-		char cur_char;
-		StorageUnit cur_loc;
-
-		for (int row = 0; row < max_row; row++) {
-			for (int col = 0; col < max_col; col++) {
-				cur_char = floor[col][row];
-				if (cur_char == LEFT_STORAGE) {
-					cur_loc.col = col - 1;
-					cur_loc.row = row;
-					ShelfUnits.push_back(cur_loc);
-				}
-				else if(cur_char == RIGHT_STORAGE)
-				{
-					cur_loc.col = col + 1;
-					cur_loc.row = row;
-					ShelfUnits.push_back(cur_loc);
-				}
-				else if(cur_char == BAY_1){
-					cur_loc.col = col;
-					cur_loc.row = row;
-					bay1.push_back(cur_loc);
-				}
-				else if (cur_char == BAY_2) {
-					cur_loc.col = col;
-					cur_loc.row = row;
-					bay2.push_back(cur_loc);
+		for (StorageUnit unit : ShelfUnits) {
+			for (int i = 0; i < sizeof(unit.shelves); i++ ) {
+				if (unit.shelves[i] == EMPTY){
+					{
+						std::lock_guard<std::mutex> mylock(mutex_);
+						unit.shelves[i] = FULL;
+					}
+					location.col = unit.col;
+					location.row = unit.row;
+					location.shelf = i;
+					return location;
 				}
 			}
 		}
+
+		InvalidLocation v;
+		return  v;
 	}
+
+	void FreeShelf(ShelfLocation location) {
+
+	}
+
+	
 
 private:
 
@@ -98,12 +105,61 @@ private:
 			fin.close();
 		}
 	}
+
+	/*
+	* Reads the floorplan and retrieves all shelf loactions and itializes shelf locations to 0=EMPTY
+	*   Note: this adds the locations nearest to the bays first
+	*/
+	void InitializeShelfLocations() {
+		char cur_char;
+		StorageUnit cur_loc;
+
+		for (int row = 0; row < max_row; row++) {
+			for (int col = 0; col < max_col; col++) {
+				cur_char = floor[col][row];
+				if (cur_char == LEFT_STORAGE) {
+					cur_loc.col = col - 1;
+					cur_loc.row = row;
+					ShelfUnits.push_back(cur_loc);
+				}
+				else if (cur_char == RIGHT_STORAGE)
+				{
+					cur_loc.col = col + 1;
+					cur_loc.row = row;
+					ShelfUnits.push_back(cur_loc);
+				}
+				else if (cur_char == BAY_1) {
+					cur_loc.col = col;
+					cur_loc.row = row;
+					bay1.push_back(cur_loc);
+				}
+				else if (cur_char == BAY_2) {
+					cur_loc.col = col;
+					cur_loc.row = row;
+					bay2.push_back(cur_loc);
+				}
+			}
+		}
+	}
 };
 
+//
+//
 struct Location
 {
 	int row;
 	int col;
+
+	 bool operator() ( Location& lhs, Location& rhs)
+	{
+		if ((lhs.col < rhs.col) && (lhs.row < rhs.row)) {
+			return true;
+		}
+		return false;
+	}
+};
+
+struct InvalidLocation : Location {
 };
 
 struct ShelfLocation : Location
