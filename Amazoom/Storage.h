@@ -26,16 +26,6 @@
 #define EMPTY 0
 #define FULL 1
 
-struct locationcomp {
-	bool operator() (Location& lhs, Location& rhs)
-	{
-		if ((lhs.col < rhs.col) && (lhs.row < rhs.row)) {
-			return true;
-		}
-		return false;
-	}
-};
-
 class Storage {
 private:
 	std::mutex mutex_;
@@ -43,7 +33,6 @@ private:
 	int max_col;
 	char floor[MAX_FLOOR_SIZE][MAX_FLOOR_SIZE]; // floor storage [c][r]
 	std::vector<StorageUnit> ShelfUnits;  //location robot needs to be to access shelf - theyre smart enough to recognize orientation of shelf relative to position
-	std::map<Location, StorageUnit,locationcomp> mymap;
 	std::vector<Location> bay1;
 	std::vector<Location> bay2;
 public:
@@ -76,8 +65,18 @@ public:
 		return  v;
 	}
 
-	void FreeShelf(ShelfLocation location) {
+	// tries to free the given location in the unitstorage at warehouse return true if successful
+	// false otherwise
+	bool FreeShelf(ShelfLocation location) {
+		for (StorageUnit unit : ShelfUnits) {
+			if((unit.col == location.col) && (unit.row == location.row)){
+				std::lock_guard<std::mutex> mylock(mutex_);
+				unit.shelves[location.shelf] = EMPTY;
+				return true;
+			}
+		}
 
+		return false;
 	}
 
 	
@@ -150,13 +149,13 @@ struct Location
 	int row;
 	int col;
 
-	 bool operator() ( Location& lhs, Location& rhs)
+	 /*bool operator() ( Location& lhs, Location& rhs)
 	{
 		if ((lhs.col < rhs.col) && (lhs.row < rhs.row)) {
 			return true;
 		}
 		return false;
-	}
+	}*/
 };
 
 struct InvalidLocation : Location {
