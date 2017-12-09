@@ -7,71 +7,121 @@
 #ifndef STORAGE_H
 #define STORAGE_H
 
+#include <chrono>
+#include <random>
+#include <cmath> 
+#include <stdio.h>      /* printf, scanf, puts, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 #include <string>
 #include <fstream>
 #include <vector>
 #include <mutex>
-#include <map>
+#include <iostream>
 
 #define WALL_CHAR 'X'
 #define EMPTY_CHAR ' '
-#define LEFT_STORAGE 'L'
-#define RIGHT_STORAGE 'R'
-#define BAY_1 '1'
-#define BAY_2 '2'
+#define LEFT_STORAGE_CHAR 'L'
+#define RIGHT_STORAGE_CHAR 'R'
+#define BAY_1_CHAR '1'
+#define BAY_2_CHAR '2'
 
 #define MAX_FLOOR_SIZE 34
-#define MAX_STORAGE_CAP_PER_UNIT 6 // 1 unit has 6 shelves - 1 shelf holds 1 product
-#define FILE_NAME "Data/Warehouse1.txt"
-#define EMPTY 0
-#define FULL 1
+#define NUM_SHELVES 6
+#define FLOOR_FILE_NAME "Warehouse1.txt"
+
+struct Location
+{
+	int row;
+	int col;
+
+	virtual std::string toString() const {
+		std::string out = "Row: ";
+		out.append(std::to_string(row));
+		out.append(" Col: ");
+		out.append(std::to_string(col));
+		return out;
+	}
+
+	// overloaded stream operator for printing
+	friend std::ostream& operator<<(std::ostream& os, const Location& s) {
+		os << s.toString();
+		return os;
+	}
+};
+
+struct ShelfLocation : Location
+{
+	int shelf;
+
+	std::string toString() const {
+		std::string out = "Row: ";
+		out.append(std::to_string(row));
+		out.append(" Col: ");
+		out.append(std::to_string(col));
+		out.append(" Shelf Unit: ");
+		out.append(std::to_string(shelf));
+		return out;
+	}
+
+	friend bool operator==(const ShelfLocation& a, const ShelfLocation& b) {
+		return (a.row == b.row) && (a.col == b.col) && (a.shelf == b.shelf);
+	}
+};
 
 class Storage {
 private:
 	std::mutex mutex_;
-	int max_row;
-	int max_col;
-	char floor[MAX_FLOOR_SIZE][MAX_FLOOR_SIZE]; // floor storage [c][r]
-	std::vector<StorageUnit> ShelfUnits;  //location robot needs to be to access shelf - theyre smart enough to recognize orientation of shelf relative to position
+	char floor[MAX_FLOOR_SIZE][MAX_FLOOR_SIZE]; // floor storage [r][c]
+	std::vector<ShelfLocation> FreeShelfs_;
+	std::vector<ShelfLocation> OccupiedShelfs_;
 	std::vector<Location> bay1;
 	std::vector<Location> bay2;
+	size_t max_row;
+	size_t max_col;
 public:
 	Storage() {
 		LoadFloor();
+		std::cout << "Loaded floormap of warehouse: " << std::endl;
+		printFloor();
+
 		InitializeShelfLocations();
 	}
 
-	//Tries to find a free shelf returns a ShelfLocation or 
-	//if non available returns an InvalidLocation type
-	Location GetFreeShelf() {
+	//Returns a random free shelf location or if none available returns 
+	//a loc with row==col==0
+	ShelfLocation GetFreeShelf() {
 		ShelfLocation location;
+		location.col = 0;
+		location.row = 0;
+		location.shelf = 0;
 
-		for (StorageUnit unit : ShelfUnits) {
-			for (int i = 0; i < sizeof(unit.shelves); i++ ) {
-				if (unit.shelves[i] == EMPTY){
-					{
-						std::lock_guard<std::mutex> mylock(mutex_);
-						unit.shelves[i] = FULL;
-					}
-					location.col = unit.col;
-					location.row = unit.row;
-					location.shelf = i;
-					return location;
-				}
-			}
+		if (!FreeShelfs_.empty()) {
+			std::lock_guard<std::mutex> mylock(mutex_);
+			/*std::default_random_engine rnd(
+				std::chrono::system_clock::now().time_since_epoch().count());
+			std::uniform_real_distribution<int> dist(0, FreeShelfs_.size());*/
+			srand(time(NULL));
+			int rand_num = rand() % FreeShelfs_.size();
+
+			location = FreeShelfs_[rand_num];
+			OccupiedShelfs_.push_back(location);
+			FreeShelfs_.erase(FreeShelfs_.begin() + rand_num);
+			return location;
 		}
 
-		InvalidLocation v;
-		return  v;
+		
+		return location;
 	}
 
-	// tries to free the given location in the unitstorage at warehouse return true if successful
-	// false otherwise
+	// tries to free the given location in return true if successful false otherwise
 	bool FreeShelf(ShelfLocation location) {
-		for (StorageUnit unit : ShelfUnits) {
-			if((unit.col == location.col) && (unit.row == location.row)){
+		for (std::vector<ShelfLocation>::iterator it = OccupiedShelfs_.begin(); it != OccupiedShelfs_.end(); ++it) {
+			if( *it == location ){
 				std::lock_guard<std::mutex> mylock(mutex_);
-				unit.shelves[location.shelf] = EMPTY;
+				FreeShelfs_.push_back(*it);
+				OccupiedShelfs_.erase(it);
+				//std::cout << "Freed Shelf at:" << it->toString() << std::endl;
 				return true;
 			}
 		}
@@ -79,98 +129,89 @@ public:
 		return false;
 	}
 
-	
+	void printFloor() {
+		for (size_t row = 0; row < max_row; row++) {
+			for (size_t col = 0; col < max_col; col++) {
+				std::cout << floor[row][col];
+			}
+			std::cout << std::endl;
+		}
+	}
 
 private:
-
-	/*
-	* Reads a floorplan from a filename and stores it in floor[][]
-	*/
+	
+	//Reads a floorplan from a filename and stores it in floor[][]
 	void LoadFloor() {
-		std::ifstream fin(FILE_NAME);
+		std::ifstream fin(FLOOR_FILE_NAME);
 		std::string line;
 
 		if (fin.is_open()) {
+			//std::cout << "File is open" << std::endl;
 			int row = 0;  // zeroeth row
+			
 			while (std::getline(fin, line)) {
-				int cols = line.length();
-				max_col = cols;
-				for (size_t col = 0; col<cols; ++col) {
-					floor[col][row] = line[col];
+				//std::cout << line << std::endl;
+				max_col = line.length();
+				for (size_t col = 0; col<line.length(); col++) {
+					floor[row][col] = line[col];
 				}
-				++row;
+				row++;
 			}
 			max_row = row;
 			fin.close();
 		}
+
 	}
 
-	/*
-	* Reads the floorplan and retrieves all shelf loactions and itializes shelf locations to 0=EMPTY
-	*   Note: this adds the locations nearest to the bays first
-	*/
+	//Reads the floorplan and retrieves all shelf loactions 
 	void InitializeShelfLocations() {
 		char cur_char;
-		StorageUnit cur_loc;
+		ShelfLocation cur_loc;
 
-		for (int row = 0; row < max_row; row++) {
-			for (int col = 0; col < max_col; col++) {
-				cur_char = floor[col][row];
-				if (cur_char == LEFT_STORAGE) {
+		for (size_t row = 0; row < max_row; row++) {
+			for (size_t col = 0; col < max_col; col++) {
+				cur_char = floor[row][col];
+				
+				if (cur_char == LEFT_STORAGE_CHAR) {
 					cur_loc.col = col - 1;
 					cur_loc.row = row;
-					ShelfUnits.push_back(cur_loc);
+					PopulateShelfs(cur_loc);
+					//std::cout << "Current Char: " << cur_char << std::endl;
+					//std::cout << "Recognized as =  "<< LEFT_STORAGE_CHAR << std::endl;
+					
 				}
-				else if (cur_char == RIGHT_STORAGE)
+				else if (cur_char == RIGHT_STORAGE_CHAR)
 				{
+					//std::cout << "Current Char: " << cur_char << std::endl;
+					//std::cout << "Recognized as =  " << RIGHT_STORAGE_CHAR << std::endl;
 					cur_loc.col = col + 1;
 					cur_loc.row = row;
-					ShelfUnits.push_back(cur_loc);
+					PopulateShelfs(cur_loc);
 				}
-				else if (cur_char == BAY_1) {
+				else if (cur_char == BAY_1_CHAR) {
+					//std::cout << "Current Char: " << cur_char << std::endl;
+					//std::cout << "Recognized as =  " << BAY_1_CHAR << std::endl;
 					cur_loc.col = col;
 					cur_loc.row = row;
-					bay1.push_back(cur_loc);
+					PopulateShelfs(cur_loc);
 				}
-				else if (cur_char == BAY_2) {
+				else if (cur_char == BAY_2_CHAR) {
+					//std::cout << "Current Char: " << cur_char << std::endl;
+					//std::cout << "Recognized as =  " << BAY_2_CHAR  << std::endl;
 					cur_loc.col = col;
 					cur_loc.row = row;
-					bay2.push_back(cur_loc);
+					PopulateShelfs(cur_loc);
 				}
 			}
 		}
 	}
-};
 
-//
-//
-struct Location
-{
-	int row;
-	int col;
-
-	 /*bool operator() ( Location& lhs, Location& rhs)
-	{
-		if ((lhs.col < rhs.col) && (lhs.row < rhs.row)) {
-			return true;
+	void PopulateShelfs(ShelfLocation loc) {
+		for (int i = 0; i < NUM_SHELVES; i++) {
+			loc.shelf = i;
+			FreeShelfs_.push_back(loc);
 		}
-		return false;
-	}*/
-};
-
-struct InvalidLocation : Location {
-};
-
-struct ShelfLocation : Location
-{
-	int shelf;
-};
-
-struct StorageUnit : Location
-{
-	//1 shelf holds 1 product
-	// True is full --- false is empty
-	int shelves[MAX_STORAGE_CAP_PER_UNIT]{};
+	}
 };
 
 #endif

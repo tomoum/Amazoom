@@ -1,0 +1,43 @@
+Name
+Iphone X
+ID
+5215667
+weight
+2.1
+Price
+1010.10
+Name
+Nike watch
+ID
+7886538
+weight
+0.5
+Price
+299.99
+name
+reading glasses
+ID
+92873884
+weight
+0.345
+Price
+24.99
+Name
+Massage Chair
+ID
+22378498
+weight
+5.6
+price
+140.99
+Name 
+Friends FULL HD DVD
+ID
+11223783
+weight
+0.3
+price
+800.89
+
+
+

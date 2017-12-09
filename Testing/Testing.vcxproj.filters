@@ -15,47 +15,41 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="warehouse.h">
+    <ClInclude Include="..\Amazoom\DynamicOrderQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="product.h">
+    <ClInclude Include="..\Amazoom\Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory.h">
+    <ClInclude Include="..\Amazoom\Order.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Messages.h">
+    <ClInclude Include="..\Amazoom\product.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Robot.h">
+    <ClInclude Include="..\Amazoom\Robot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Order.h">
+    <ClInclude Include="..\Amazoom\Storage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Storage.h">
+    <ClInclude Include="..\Amazoom\TruckQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicOrderQueue.h">
+    <ClInclude Include="..\Amazoom\Trucks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Trucks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TruckQueue.h">
+    <ClInclude Include="..\Amazoom\warehouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="warehouse.cpp">
+    <ClCompile Include="Unit-Testing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Data\Warehouse1.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="Data\Products.txt">
+    <Text Include="Products.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -10,27 +10,28 @@
 
 #include <string>
 #include <iostream>
-
-class WarehouseProduct : Product {
-public:
-	ShelfLocation location;
-};
+#include "Storage.h"
 
 
 class Product {
-public:
-	const std::string name;
-	const int ID;
-	const double weight_kg;
-	const double price;
 
-	Product(const std::string name, const int id, const double weight, const double price) :
-		name(name), ID(id), weight_kg(weight), price(price) {}
+public:
+	 std::string name_;
+	 int ID_;
+	 double weight_;
+	 double price_;
+	 ShelfLocation location_;
+
+	Product( std::string name,  int id,  double weight,  double price) :
+		name_(name), ID_(id), weight_(weight), price_(price) {}
+
+	Product() :
+		name_("No name"), ID_(000), weight_(000), price_(000) {}
 
 	std::string toString() const {
-		std::string out = name;
+		std::string out = name_;
 		out.append(" - ");
-		out.append(std::to_string(ID));
+		out.append(std::to_string(ID_));
 		return out;
 	}
 
@@ -39,6 +40,17 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const Product& s) {
 		os << s.toString();
 		return os;
+	}
+
+	Product& operator=(Product other)
+	{
+		//std::cout << "copy assignment of Product\n";
+		std::swap(name_, other.name_);
+		std::swap(ID_, other.ID_);
+		std::swap(weight_, other.weight_);
+		std::swap(price_, other.price_);
+		std::swap(location_, other.location_);
+		return *this;
 	}
 
 };

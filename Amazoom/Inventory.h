@@ -17,10 +17,22 @@ private:
 	std::mutex mutex; 
 	std::vector<ShelfLocation> stored;
 	std::vector<ShelfLocation> reserved;
-	const int ID;
+	int ID_ = 0;
+	Product product_;
+	bool set_once; // only set the id once 
 
 public:
-	Inventory( const int product_id) :ID(product_id) {}
+	Inventory() {
+		set_once = true;
+	}
+	void setProduct(Product prod){
+		if (set_once){
+			ID_ = prod.ID_;
+			product_ = prod;
+			set_once = false;
+		}
+		
+	}
 
 	void store(ShelfLocation location) {
 		std::lock_guard<std::mutex> mylock(mutex);
@@ -44,7 +56,7 @@ public:
 	* @return number of items that could be reserved if this number matches quantity input then
 	*         all items have been reserved other wise none of them are reserved.
 	*/
-	int reserve(int quantity) {
+	int reserve(size_t quantity) {
 		std::lock_guard<std::mutex> mylock(mutex);
 
 		if (stored.size() < quantity) {
@@ -74,6 +86,14 @@ public:
 	int numStored() {
 		std::lock_guard<std::mutex> mylock(mutex);
 		return stored.size();
+	}
+
+	int getID(){
+		return ID_;
+	}
+
+	Product getProduct() {
+		return product_;
 	}
 	
 };

@@ -2,12 +2,11 @@
 #define ROBOT_H
 
 
-#include <cpen333/thread/thread_object.h>
 #include <iostream>
 #include <thread>
 #include "DynamicOrderQueue.h"
 
-#define MAX_CAPACITY 200 //in kg
+#define MAX_CAPACITY 200.00 //in kg
 
 class Robot {
 private:
