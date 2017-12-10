@@ -4,7 +4,6 @@
 *Description: Provides all information about a particular product having the same ID as the product ID
 */
 
-
 #ifndef INVENTORY_H
 #define INVENTORY_H
 
@@ -17,22 +16,13 @@ private:
 	std::mutex mutex; 
 	std::vector<ShelfLocation> stored;
 	std::vector<ShelfLocation> reserved;
-	int ID_ = 0;
-	Product product_;
-	bool set_once; // only set the id once 
+    int ID_;
 
 public:
-	Inventory() {
-		set_once = true;
+	Inventory(int id): ID_(id) {
 	}
-	void setProduct(Product prod){
-		if (set_once){
-			ID_ = prod.ID_;
-			product_ = prod;
-			set_once = false;
-		}
-		
-	}
+
+	Inventory(const Inventory &p2) { ID_ = p2.ID_; }
 
 	void store(ShelfLocation location) {
 		std::lock_guard<std::mutex> mylock(mutex);
@@ -49,18 +39,18 @@ public:
 	}
 
 	/**
-	* Tries to reserve a quantity from the stored vector to reserved 
-	* if it fails returns them back to stored
+	* Tries to reserve a quantity from the stored vector
+	* if it cant reserve them all it wont reserve any
 	*
 	* @param quantity number of products to be reserved
 	* @return number of items that could be reserved if this number matches quantity input then
 	*         all items have been reserved other wise none of them are reserved.
 	*/
-	int reserve(size_t quantity) {
+	int Reserve(size_t quantity) {
 		std::lock_guard<std::mutex> mylock(mutex);
 
 		if (stored.size() < quantity) {
-			return false;
+			return stored.size();
 		}
 
 		for (size_t i = 0; i < quantity; i++)
@@ -68,13 +58,41 @@ public:
 			reserved.push_back(stored.back());
 			stored.pop_back();
 		}
-		return true;
+
+		return quantity;
+	}
+
+	/**
+	* Tries to unreserve a quantity from the reserved vector
+	* if it cant unreserve them all it wont unreserve any
+	*
+	* @param quantity number of products to be reserved
+	* @return number of items that could be unreserved if this number matches quantity input then
+	*         all items have been unreserved other wise none of them are.
+	*/
+	int UnReserve(size_t quantity) {
+		std::lock_guard<std::mutex> mylock(mutex);
+
+		if (reserved.size() < quantity) {
+			return reserved.size();
+		}
+
+		for (size_t i = 0; i < quantity; i++)
+		{
+			stored.push_back(reserved.back());
+			reserved.pop_back();
+		}
+
+		return quantity;
 	}
 
 	ShelfLocation aquire() {
-		std::lock_guard<std::mutex> mylock(mutex);
-		ShelfLocation out = reserved.back();
-		stored.pop_back();
+		ShelfLocation out;
+		if (!reserved.empty()) {
+			std::lock_guard<std::mutex> mylock(mutex);
+			out = reserved.back();
+			reserved.pop_back();
+		}
 		return out;
 	}
 
@@ -92,10 +110,18 @@ public:
 		return ID_;
 	}
 
-	Product getProduct() {
-		return product_;
+	std::string toString() const {
+		std::string out = std::to_string(ID_);
+		return out;
 	}
-	
+
+	// overloaded stream operator for printing
+	//    std::cout << product
+	friend std::ostream& operator<<(std::ostream& os, const Inventory& s) {
+		os << s.toString();
+		return os;
+	}
+
 };
 
 #endif

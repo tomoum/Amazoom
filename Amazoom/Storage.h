@@ -54,6 +54,34 @@ struct ShelfLocation : Location
 {
 	int shelf;
 
+	//Intializes the location to be invalid. 
+	ShelfLocation() {
+		row = -1;
+		col = -1;
+		shelf = -1;
+	}
+
+	ShelfLocation(const ShelfLocation &other) {
+		row = other.row;
+		col = other.col;
+		shelf = other.shelf;
+		
+	}
+
+	ShelfLocation& operator=(ShelfLocation other)
+	{
+		row = other.row;
+		col = other.col;
+		shelf = other.shelf;
+		return *this;
+	}
+	bool isValid() {
+		if (row != -1 && col != -1 && shelf != -1) {
+			return true;
+		}
+		return false;
+	}
+
 	std::string toString() const {
 		std::string out = "Row: ";
 		out.append(std::to_string(row));
@@ -92,9 +120,6 @@ public:
 	//a loc with row==col==0
 	ShelfLocation GetFreeShelf() {
 		ShelfLocation location;
-		location.col = 0;
-		location.row = 0;
-		location.shelf = 0;
 
 		if (!FreeShelfs_.empty()) {
 			std::lock_guard<std::mutex> mylock(mutex_);
@@ -116,6 +141,10 @@ public:
 
 	// tries to free the given location in return true if successful false otherwise
 	bool FreeShelf(ShelfLocation location) {
+		if (!location.isValid()) {
+			return false;
+		}
+
 		for (std::vector<ShelfLocation>::iterator it = OccupiedShelfs_.begin(); it != OccupiedShelfs_.end(); ++it) {
 			if( *it == location ){
 				std::lock_guard<std::mutex> mylock(mutex_);

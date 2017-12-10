@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Communication">
+      <UniqueIdentifier>{71baf4ee-b5af-46c1-b2cd-6de767d364b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Amazoom\DynamicOrderQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Amazoom\Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -41,6 +41,12 @@
     </ClInclude>
     <ClInclude Include="..\Amazoom\warehouse.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Amazoom\DynamicOrderQueue.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="safe_printf.h">
+      <Filter>Header Files\Communication</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

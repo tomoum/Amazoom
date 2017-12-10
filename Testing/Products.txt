@@ -1,6 +1,7 @@
 //Note: to add a product you must stick to the format below
 //      1- identifiers(case sensitive) : name, ID, weight, price 
 //		2- order of identifiers matter
+//		3- Must update NUM_PRODUCTS var in warehouse.h
 name
 Iphone X
 

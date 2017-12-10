@@ -41,7 +41,45 @@ int main() {
 	}*/
 	//-----------------------------------------------------------------------------------
 
+	//Testing the robot queue and robots collecting orders.
+	//------------------------------------------------------------
 	Warehouse ware;
+
+	Order ord;
+
+	ord.ID_ = 456334;
+
+	Product p = ware.getProduct(5215667);
+	p.quantity_ = 4;
+	ord.products_.push_back(p);
+	//std::cout << std::to_string(ord.products_.back().quantity_) << std::endl;
+
+	p = ware.getProduct(7886538);
+	p.quantity_ = 3;
+	ord.products_.push_back(p);
+
+	/*ord.products_.back().quantity_ = 6;
+	std::cout << std::to_string(ord.products_.back().quantity_) << std::endl;*/
+
+	p = ware.getProduct(92873884);
+	p.quantity_ = 6;
+	ord.products_.push_back(p);
+
+	p = ware.getProduct(73738462);
+	p.quantity_ = 5;
+	ord.products_.push_back(p);
+
+	std::cout << "Sending order for verification: " << std::endl;
+	std::cout << ord.toString() << std::endl;
+
+	//if (ware.VerifyOrder(ord)) {
+	//	//ware.AddOrder(ord);
+	//	std::cout << "Order Verified" << std::endl;
+
+	//}
+	//ServerItem item1(5215667, 4); // this will pass
+	//ServerItem item2(7886538, 40); // this will fail
+
 
 	std::cin.get();
 	return 0;

@@ -12,21 +12,31 @@
 #include <iostream>
 #include "Storage.h"
 
-
-class Product {
-
-public:
+struct Product {
 	 std::string name_;
 	 int ID_;
 	 double weight_;
 	 double price_;
 	 ShelfLocation location_;
+	 int quantity_;
 
 	Product( std::string name,  int id,  double weight,  double price) :
 		name_(name), ID_(id), weight_(weight), price_(price) {}
 
-	Product() :
-		name_("No name"), ID_(000), weight_(000), price_(000) {}
+	Product() {}
+
+	Product(const Product &p2) { 
+		ID_ = p2.ID_; 
+		name_ = p2.name_;
+		weight_ = p2.weight_;
+		price_ = p2.price_;
+		quantity_ = p2.quantity_;
+		location_ = p2.location_;
+	}
+
+	std::string qString() {
+		return std::to_string(quantity_);
+	}
 
 	std::string toString() const {
 		std::string out = name_;
@@ -44,12 +54,12 @@ public:
 
 	Product& operator=(Product other)
 	{
-		//std::cout << "copy assignment of Product\n";
-		std::swap(name_, other.name_);
-		std::swap(ID_, other.ID_);
-		std::swap(weight_, other.weight_);
-		std::swap(price_, other.price_);
-		std::swap(location_, other.location_);
+		ID_ = other.ID_;
+		name_ = other.name_;
+		weight_ = other.weight_;
+		price_ = other.price_;
+		quantity_ = other.quantity_;
+		location_ = other.location_;
 		return *this;
 	}
 

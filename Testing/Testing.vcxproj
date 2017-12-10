@@ -122,6 +122,7 @@
     <ClInclude Include="..\Amazoom\TruckQueue.h" />
     <ClInclude Include="..\Amazoom\Trucks.h" />
     <ClInclude Include="..\Amazoom\warehouse.h" />
+    <ClInclude Include="safe_printf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Unit-Testing.cpp" />
