@@ -5,7 +5,7 @@
 #include "Trucks.h"
 #include <mutex>
 
-#define CIRCULAR_BUFF_SIZE 8
+#define CIRCULAR_BUFF_SIZE 2
 
 /**
 * Queue implementation using a circular buffer
