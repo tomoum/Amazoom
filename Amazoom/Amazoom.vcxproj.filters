@@ -45,6 +45,9 @@
     <ClInclude Include="TruckQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ManagersUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="warehouse.cpp">
@@ -55,7 +58,7 @@
     <Text Include="Data\Warehouse1.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="Data\Products.txt">
+    <Text Include="Products.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -33,20 +33,20 @@
     <ClInclude Include="..\Amazoom\Storage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Amazoom\TruckQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Amazoom\Trucks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Amazoom\warehouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Amazoom\DynamicOrderQueue.h">
-      <Filter>Header Files\Communication</Filter>
-    </ClInclude>
     <ClInclude Include="safe_printf.h">
       <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Amazoom\OrderQueue.h">
+      <Filter>Header Files\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingBay.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

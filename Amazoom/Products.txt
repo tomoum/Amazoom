@@ -1,43 +1,67 @@
-Name
+//Note: to add a product you must stick to the format below
+//      1- identifiers(case sensitive) : name, ID, weight, price 
+//		2- order of identifiers matter
+//		
+name
 Iphone X
+
 ID
 5215667
+
 weight
-2.1
-Price
+2.0
+
+price
 1010.10
-Name
+----------------------
+name
 Nike watch
+
 ID
 7886538
+
 weight
 0.5
-Price
+
+price
 299.99
+----------------------
 name
 reading glasses
+
 ID
 92873884
+
 weight
 0.345
-Price
+
+price
 24.99
-Name
+----------------------
+name
 Massage Chair
+
 ID
 22378498
+
 weight
-5.6
+220.5
+
 price
 140.99
-Name 
-Friends FULL HD DVD
+----------------------
+name
+Diet Coke
+
 ID
-11223783
+73738462
+
 weight
 0.3
+
 price
-800.89
+2.99
+----------------------
 
 
 

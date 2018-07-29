@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{51E7D917-81D2-4A0E-9E4C-4E149986F488}</ProjectGuid>
-    <RootNamespace>Testing</RootNamespace>
+    <ProjectGuid>{E294248D-3FF9-48B8-85DC-4F4DEFFDF462}</ProjectGuid>
+    <RootNamespace>WarehouseClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -69,9 +69,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);\\Mac\Home\Desktop\Amazoom\Amazoom\Amazoom;\\Mac\Home\Desktop\Amazoom\Amazoom\Amazoom\include</IncludePath>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -113,22 +111,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Amazoom\OrderQueue.h" />
-    <ClInclude Include="..\Amazoom\Inventory.h" />
-    <ClInclude Include="..\Amazoom\Order.h" />
-    <ClInclude Include="..\Amazoom\product.h" />
-    <ClInclude Include="..\Amazoom\Robot.h" />
-    <ClInclude Include="..\Amazoom\Storage.h" />
-    <ClInclude Include="..\Amazoom\Trucks.h" />
-    <ClInclude Include="..\Amazoom\warehouse.h" />
-    <ClInclude Include="LoadingBay.h" />
-    <ClInclude Include="safe_printf.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Unit-Testing.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Products.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

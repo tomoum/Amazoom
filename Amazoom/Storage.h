@@ -116,6 +116,23 @@ public:
 		InitializeShelfLocations();
 	}
 
+	Storage(const Storage &other) {
+		std::mutex mutex_;
+		FreeShelfs_ = other.FreeShelfs_;
+		OccupiedShelfs_ = other.OccupiedShelfs_;
+		bay1 = other.bay1;
+		bay2 = other.bay2;
+	}
+
+	Storage& operator=(Storage other)
+	{
+		std::mutex mutex_;
+		FreeShelfs_ = other.FreeShelfs_;
+		OccupiedShelfs_ = other.OccupiedShelfs_;
+		bay1 = other.bay1;
+		bay2 = other.bay2;
+		return *this;
+	}
 	//Returns a random free shelf location or if none available returns 
 	//a loc with row==col==0
 	ShelfLocation GetFreeShelf() {
@@ -143,18 +160,19 @@ public:
 	bool FreeShelf(ShelfLocation location) {
 		if (!location.isValid()) {
 			return false;
+			std::cout << "Location invalid! " << std::endl;
 		}
-
-		for (std::vector<ShelfLocation>::iterator it = OccupiedShelfs_.begin(); it != OccupiedShelfs_.end(); ++it) {
-			if( *it == location ){
-				std::lock_guard<std::mutex> mylock(mutex_);
-				FreeShelfs_.push_back(*it);
-				OccupiedShelfs_.erase(it);
-				//std::cout << "Freed Shelf at:" << it->toString() << std::endl;
+		int i = 0;
+		for (auto& shelf : OccupiedShelfs_) {
+			if (shelf == location) {
+				FreeShelfs_.push_back(shelf);	
+				OccupiedShelfs_.erase(OccupiedShelfs_.begin() + i);
+				std::cout << "Storage Successfully freed shelf location: " << FreeShelfs_.back().toString() << std::endl;
 				return true;
 			}
+			i++;
 		}
-
+		std::cout << "Error! Could not find storage location! " << location.toString() << std::endl;
 		return false;
 	}
 

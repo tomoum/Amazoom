@@ -115,6 +115,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DynamicOrderQueue.h" />
+    <ClInclude Include="ManagersUI.h" />
     <ClInclude Include="Storage.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Messages.h" />
@@ -129,8 +130,8 @@
     <ClCompile Include="warehouse.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Data\Products.txt" />
     <Text Include="Data\Warehouse1.txt" />
+    <Text Include="Products.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

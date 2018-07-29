@@ -18,11 +18,20 @@ enum RobotTask {
 	QUIT, // terminate thread
 };
 
+struct OrderReport {
+	bool verified;
+	Product product;
+	int quantity;
+
+	OrderReport() {
+		verified = true;
+	}
+};
+
 struct Order {
 	int ID_;
     int task_;
     int bay_;
-	double order_weight;
 	std::vector<Product> products_;
 	OrderStatus status;
 
@@ -42,7 +51,6 @@ struct Order {
 		ID_ = other.ID_;
 		task_ = other.task_;
 		bay_ = other.bay_;
-		order_weight = other.order_weight;
 		status = other.status;
 		products_ = other.products_;
 		return *this;
@@ -52,14 +60,14 @@ struct Order {
 	std::string toString() {
 
 		std::string out = "\n*********Order ID: ";
-		out.append(std::to_string(ID_) + "********\n");
+		out.append(std::to_string(ID_) + "**********\n");
 		out.append("\nProducts:") ;
 		for (std::vector<Product>::iterator p = products_.begin(); p != products_.end(); ++p) {
 			out.append("\n" + p->toString());
 			out.append("\nQuantity: ");
 			out.append(p->qString());
 		}
-		out.append("\n***********************************\n");
+		out.append("\n************************************\n");
 		return out;
 	}
 
@@ -71,29 +79,6 @@ struct Order {
 	}
 
 };
-
-//Represents product id and quantity
-struct ServerItem {
-	int product_id;
-	int quantity_;
-
-	ServerItem(int prod_id, int q) : product_id(prod_id), quantity_(q) {};
-
-	std::string toString() const {
-		std::string out = std::to_string(product_id);
-		out.append(" - ");
-		out.append(std::to_string(quantity_));
-		return out;
-	}
-
-	// overloaded stream operator for printing
-	//    std::cout << product
-	friend std::ostream& operator<<(std::ostream& os, const ServerItem& s) {
-		os << s.toString();
-		return os;
-	}
-};
-
 
 
 #endif

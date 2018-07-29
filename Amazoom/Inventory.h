@@ -10,6 +10,9 @@
 #include "product.h"
 #include "Storage.h"
 #include <mutex>
+#include <string>
+
+#define LOW_STOCK_THRESHOLD 18
 
 class Inventory {
 private:
@@ -17,16 +20,22 @@ private:
 	std::vector<ShelfLocation> stored;
 	std::vector<ShelfLocation> reserved;
     int ID_;
+	
 
 public:
-	Inventory(int id): ID_(id) {
-	}
+	Inventory(int id ): ID_(id){}
 
-	Inventory(const Inventory &p2) { ID_ = p2.ID_; }
+	Inventory(const Inventory &other) { 
+		std::mutex mutex;
+		ID_ = other.ID_;
+		stored = other.stored;
+		reserved = other.reserved;
+	}
 
 	void store(ShelfLocation location) {
 		std::lock_guard<std::mutex> mylock(mutex);
 		stored.push_back(location);
+		//std::cout << "Item added to Inventory " << std::to_string(ID_) <<std::endl;
 	}
 
 	void store(std::vector<ShelfLocation>& locations) {
@@ -36,6 +45,8 @@ public:
 			std::make_move_iterator(locations.begin()),
 			std::make_move_iterator(locations.end())
 		);
+
+
 	}
 
 	/**
@@ -58,7 +69,9 @@ public:
 			reserved.push_back(stored.back());
 			stored.pop_back();
 		}
-
+		std::cout << "Inventory " << std::to_string(ID_) << " : Successfuly Reserved "<< std::to_string(quantity) 
+			<< " items."
+			<< std::endl;
 		return quantity;
 	}
 
@@ -92,6 +105,9 @@ public:
 			std::lock_guard<std::mutex> mylock(mutex);
 			out = reserved.back();
 			reserved.pop_back();
+		}
+		if (numStored() < LOW_STOCK_THRESHOLD) {
+			std::cout << "Product ID " << std::to_string(ID_) << " LOW ON STOCK!!" << std::endl;
 		}
 		return out;
 	}

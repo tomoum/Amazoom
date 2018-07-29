@@ -31,5 +31,10 @@ namespace Managers_GUI
         {
 
         }
+
+        private void check_quantity_btn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
