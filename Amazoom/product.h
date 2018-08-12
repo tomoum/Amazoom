@@ -1,10 +1,9 @@
 /*
 *Date: 12/1/2017
 *Author: Muhab Tomoum - 52141132
-*Description: Provides the defintion of a product
+*Description: Has all the information needed by any class interacting with a product
 */
 
-#pragma once
 #ifndef PRODUCT_H
 #define PRODUCT_H
 
