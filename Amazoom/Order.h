@@ -1,3 +1,9 @@
+/*
+*Date: 12/1/2017
+*Author: Muhab Tomoum - 52141132
+*Description: Provides the defintion of the different orders depending on whos using it(Robot, warehouse, User)
+*/
+
 #ifndef ORDER_H
 #define ORDER_H
 
@@ -79,6 +85,5 @@ struct Order {
 	}
 
 };
-
 
 #endif

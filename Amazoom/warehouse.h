@@ -1,3 +1,9 @@
+/*
+*Date: 12/1/2017
+*Author: Muhab Tomoum - 52141132
+*Description: Main Class that controls the robot operation, keep track of products and orders, communicates with the webserver
+*			  taking in orders from the GUI. 
+*/
 
 #ifndef WAREHOUSE_H
 #define WAREHOUSE_H

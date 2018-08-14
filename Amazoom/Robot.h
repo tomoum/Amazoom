@@ -1,3 +1,9 @@
+/*
+*Date: 12/1/2017
+*Author: Muhab Tomoum - 52141132
+*Description: Robots check the queue made by the warehouse - collect products then place them on trucks
+*/
+
 #ifndef ROBOT_H
 #define ROBOT_H
 

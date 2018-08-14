@@ -1,4 +1,8 @@
-
+/*
+*Date: 12/1/2017
+*Author: Muhab Tomoum - 52141132
+*Description: Allows the warehouse manager access to some data, query stock levels, shutdown operations etc. 
+*/
 
 #ifndef MANAGERSUI_H
 #define MANAGERSUI_H
